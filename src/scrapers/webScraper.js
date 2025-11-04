@@ -190,7 +190,7 @@ const WebScraper = {
         throw new Error(`Bing HTTP ${response.status || 'error'}`);
       }
       
-      return this.parseBingHTML(response.data, maxResults);
+      return await this.parseBingHTML(response.data, maxResults);
       
     } catch (error) {
       // Don't log here - will be logged in main search() if both fail
@@ -202,9 +202,9 @@ const WebScraper = {
    * Parse Bing HTML response
    * @param {string} html - HTML content
    * @param {number} maxResults - Max results
-   * @returns {Array} Parsed results
+   * @returns {Promise<Array>} Parsed results
    */
-  parseBingHTML(html, maxResults) {
+  async parseBingHTML(html, maxResults) {
     // Use global URLUnwrapper exposed by content script load order
     const unwrapRedirect = (typeof window !== 'undefined' && window.URLUnwrapper && window.URLUnwrapper.unwrapRedirect)
       ? window.URLUnwrapper.unwrapRedirect
@@ -268,19 +268,45 @@ const WebScraper = {
     }
     
     // Clean the results using URL unwrapper
-    const cleanResults = rawResults
-      .map(r => {
-        const raw = r.url || r.link || r.href || '';
-        const dest = unwrapRedirect(raw);
-        let domain = '';
-        try { 
-          domain = new URL(dest).hostname.replace(/^www\./, ''); 
+    // Process results sequentially to handle async URL resolution fallback
+    const cleanResults = [];
+    for (const r of rawResults) {
+      const raw = r.url || r.link || r.href || '';
+      let dest = unwrapRedirect(raw);
+      let domain = '';
+      
+      // If unwrapping didn't work (still a Bing URL), try background script resolver
+      if (dest && dest.includes('bing.com/ck/a')) {
+        Logger.log(`Attempting background URL resolution for: ${dest.substring(0, 80)}...`);
+        try {
+          // Use background script to resolve the URL
+          const response = await new Promise((resolve) => {
+            chrome.runtime.sendMessage(
+              { type: 'RESOLVE_URL', url: dest },
+              resolve
+            );
+          });
+          if (response && response.ok && response.finalUrl) {
+            Logger.log(`Background resolved: ${response.finalUrl.substring(0, 60)}...`);
+            dest = response.finalUrl;
+          } else {
+            Logger.log(`Background resolution failed: ${JSON.stringify(response)}`);
+          }
         } catch (e) {
-          Logger.log(`Failed to extract domain from: ${dest}`);
+          Logger.log(`Background resolution error: ${e.message}`);
         }
-        return { ...r, url: dest, domain };
-      })
-      .filter(r => r.url && r.domain && !r.domain.endsWith('bing.com'));
+      }
+      
+      try { 
+        domain = new URL(dest).hostname.replace(/^www\./, ''); 
+      } catch (e) {
+        Logger.log(`Failed to extract domain from: ${dest}`);
+      }
+      
+      if (dest && domain && !domain.endsWith('bing.com')) {
+        cleanResults.push({ ...r, url: dest, domain });
+      }
+    }
     
     Logger.log(`Cleaned ${rawResults.length} raw results to ${cleanResults.length} valid results`);
     
