@@ -1,7 +1,13 @@
 // Configuration constants for Moneo extension
 
 const CONFIG = {
-  // OpenAI
+  // Supabase (optional - can be set via chrome.storage)
+  supabase: {
+    url: '', // e.g., 'https://your-project.supabase.co'
+    anonKey: '' // Supabase anonymous key
+  },
+  
+  // OpenAI (legacy - now handled by Supabase Edge Functions)
   openai: {
     apiKey: '', // Set via chrome.storage or environment
     model: 'gpt-4o-mini' // Faster, cheaper, better rate limits

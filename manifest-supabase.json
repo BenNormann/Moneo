@@ -1,0 +1,76 @@
+{
+  "manifest_version": 3,
+  "name": "Moneo",
+  "version": "1.0.0",
+  "description": "To warn, advise, remind - AI-powered fact-checking that analyzes and scores claims in news articles",
+  "permissions": [
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*",
+    "https://*.supabase.co/*"
+  ],
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.nytimes.com/*",
+        "*://*.washingtonpost.com/*",
+        "*://*.theguardian.com/*",
+        "*://*.bbc.com/*",
+        "*://*.cnn.com/*",
+        "*://*.foxnews.com/*",
+        "*://*.theonion.com/*",
+        "*://*.foxbusiness.com/*",
+        "*://*.reuters.com/*",
+        "*://*.apnews.com/*",
+        "*://*.npr.org/*",
+        "*://*.nbcnews.com/*",
+        "*://*.abcnews.go.com/*",
+        "*://*.cbsnews.com/*",
+        "*://*.bloomberg.com/*",
+        "*://*.wsj.com/*",
+        "*://*.ft.com/*"
+      ],
+      "js": [
+        "src/config.js",
+        "src/utils/logger.js",
+        "src/utils/supabase.js",
+        "src/ui/tooltip.js",
+        "src/ui/highlighter.js",
+        "src/content-supabase.js"
+      ],
+      "css": [
+        "styles/highlights.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "64": "icons/icon64.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "64": "icons/icon64.png",
+      "128": "icons/icon128.png"
+    },
+    "default_title": "Moneo - To Warn, Advise, Remind"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/lighthouse-search.gif"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
+
