@@ -1,9 +1,5 @@
 # Supabase project configuration
 
-[project]
-name = "moneo"
-id = "your-project-id"
-
 [api]
 enabled = true
 port = 54321
@@ -13,7 +9,7 @@ max_rows = 1000
 
 [db]
 port = 54322
-major_version = 15
+major_version = 17
 
 [studio]
 enabled = true
@@ -38,4 +34,3 @@ enable_signup = true
 enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
-

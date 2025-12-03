@@ -1,10 +1,10 @@
 // Configuration constants for Moneo extension
 
 const CONFIG = {
-  // Supabase (optional - can be set via chrome.storage)
+  // Supabase configuration
   supabase: {
-    url: '', // e.g., 'https://your-project.supabase.co'
-    anonKey: '' // Supabase anonymous key
+    url: 'https://tqholygduvliggwkdaqy.supabase.co',
+    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRxaG9seWdkdXZsaWdnd2tkYXF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2MzQ3NDIsImV4cCI6MjA4MDIxMDc0Mn0.-EqYirG8EZFT4NJY9iKZ-ormM_69N-BZOI2iEjqB37U'
   },
   
   // OpenAI (legacy - now handled by Supabase Edge Functions)

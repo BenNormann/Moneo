@@ -9,7 +9,8 @@
   ],
   "host_permissions": [
     "https://*/*",
-    "http://*/*"
+    "http://*/*",
+    "https://*.supabase.co/*"
   ],
   "background": {
     "service_worker": "src/background.js"
@@ -38,22 +39,10 @@
       "js": [
         "src/config.js",
         "src/utils/logger.js",
-        "src/utils/cache.js",
-        "src/utils/api.js",
-        "src/utils/biasResolver.js",
-        "src/utils/urlUnwrapper.js",
-        "src/scrapers/webScraper.js",
-        "src/scrapers/scholarScraper.js",
-        "src/scoring/webScorer.js",
-        "src/utils/webSearch.js",
-        "src/core/claimExtractor.js",
-        "src/core/claimClassifier.js",
-        "src/scoring/aiScorer.js",
-        "src/scoring/scholarScorer.js",
-        "src/core/claimScorer.js",
+        "src/utils/supabase.js",
         "src/ui/tooltip.js",
         "src/ui/highlighter.js",
-        "src/content.js"
+        "src/content-supabase.js"
       ],
       "css": [
         "styles/highlights.css"
@@ -79,7 +68,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["secrets.json", "icons/lighthouse-search.gif"],
+      "resources": ["icons/lighthouse-search.gif"],
       "matches": ["<all_urls>"]
     }
   ]

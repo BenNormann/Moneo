@@ -320,14 +320,11 @@ const Highlighter = {
     const categorized = { left: [], center: [], right: [], unknown: [] };
     
     webSources.forEach(source => {
-      if (!BiasResolver || typeof BiasResolver.classify !== 'function') {
-        categorized.unknown.push(source);
-        return;
-      }
+      // Use bias from source (must come from Edge Function - no client-side fallback)
+      const bias = source.bias || 'unknown';
       
-      const b = BiasResolver.classify(source.domain);
-      if (b === 'left' || b === 'center' || b === 'right') {
-        categorized[b].push(source);
+      if (bias === 'left' || bias === 'center' || bias === 'right') {
+        categorized[bias].push(source);
       } else {
         categorized.unknown.push(source);
       }
