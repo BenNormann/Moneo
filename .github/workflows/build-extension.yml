@@ -1,0 +1,54 @@
+# Build and package Moneo extension for release.
+# Uses GitHub Secrets for keys; no secrets are logged or committed.
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   SUPABASE_URL         - e.g. https://xxxx.supabase.co
+#   SUPABASE_ANON_KEY    - Supabase anon/public JWT
+#
+# Output: Extension zip uploaded as workflow artifact (download from Actions run).
+
+name: Build extension
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Prepare Supabase config
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: npm run prepare-release
+
+      - name: Package extension
+        run: |
+          zip -r moneo-extension.zip . \
+            -x "*.git*" \
+            -x "node_modules/*" \
+            -x ".github/*" \
+            -x "*.env" \
+            -x ".env.*" \
+            -x "*.md" \
+            -x "supabase/.temp/*" \
+            -x "tests/*" \
+            -x "*.test.js" \
+            -x ".DS_Store"
+
+      - name: Upload extension artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: moneo-extension
+          path: moneo-extension.zip

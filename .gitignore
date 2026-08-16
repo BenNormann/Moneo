@@ -11,6 +11,7 @@ package-lock.json
 config.local.js
 secrets.json
 secrets.*.json
+supabase.config.json
 
 # IDE
 .vscode/
