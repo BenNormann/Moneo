@@ -4,7 +4,8 @@
   "description": "To warn, advise, remind - AI-powered fact-checking browser extension that analyzes and scores claims in news articles",
   "main": "src/content.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare-release": "node scripts/prepare-release.js"
   },
   "keywords": [
     "fact-checking",
